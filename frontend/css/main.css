@@ -1,0 +1,167 @@
+/* ── Base ── */
+body {
+    background: #13161b;
+    color: #e2e8f0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+/* ── Sidebar links ── */
+.sidebar-link {
+    color: #8892a4;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 12px;
+    transition: all 0.15s;
+}
+
+.sidebar-link:hover {
+    background: #2d3139;
+    color: #e2e8f0;
+}
+
+.sidebar-link.active {
+    background: #0d6efd;
+    color: #fff;
+}
+
+/* ── Cards ── */
+.cmms-card {
+    background: #1a1d23;
+    border: 1px solid #2d3139;
+    border-radius: 10px;
+}
+
+/* ── Stat cards ── */
+.stat-card {
+    background: #1a1d23;
+    border: 1px solid #2d3139;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.stat-card .stat-val {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.stat-card .stat-label {
+    font-size: 12px;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-top: 4px;
+}
+
+/* ── Tables ── */
+.table-dark-cmms {
+    --bs-table-bg: #1a1d23;
+    --bs-table-border-color: #2d3139;
+    --bs-table-striped-bg: #1e2128;
+    --bs-table-hover-bg: #22262e;
+    color: #e2e8f0;
+}
+
+/* ── Badges / status ── */
+.badge-open {
+    background: #1a3a5c;
+    color: #60a5fa;
+}
+
+.badge-in_progress {
+    background: #3a2a00;
+    color: #fbbf24;
+}
+
+.badge-done {
+    background: #0d2d1a;
+    color: #34d399;
+}
+
+.badge-cancelled {
+    background: #2a1a1a;
+    color: #f87171;
+}
+
+.badge-critical {
+    background: #3a0a0a;
+    color: #f87171;
+}
+
+.badge-high {
+    background: #3a2a00;
+    color: #fbbf24;
+}
+
+.badge-medium {
+    background: #1a2a3a;
+    color: #60a5fa;
+}
+
+.badge-low {
+    background: #1a2a1a;
+    color: #6ee7b7;
+}
+
+/* ── Page wrapper ── */
+.page-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+.page-content {
+    flex: 1;
+    padding: 28px 32px;
+    overflow-x: hidden;
+}
+
+/* ── Topbar ── */
+.topbar {
+    background: #1a1d23;
+    border-bottom: 1px solid #2d3139;
+    padding: 12px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.topbar .page-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+}
+
+/* ── Modals ── */
+.modal-content {
+    background: #1a1d23;
+    border: 1px solid #2d3139;
+    color: #e2e8f0;
+}
+
+.modal-header {
+    border-bottom: 1px solid #2d3139;
+}
+
+.modal-footer {
+    border-top: 1px solid #2d3139;
+}
+
+.form-control,
+.form-select {
+    background: #13161b;
+    border: 1px solid #2d3139;
+    color: #e2e8f0;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background: #13161b;
+    border-color: #0d6efd;
+    color: #e2e8f0;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.form-control::placeholder {
+    color: #4a5568;
+}

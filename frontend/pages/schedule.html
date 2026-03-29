@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMMS — Schedule</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../css/main.css" rel="stylesheet">
+</head>
+
+<body data-page="schedule">
+    <div class="page-wrapper">
+
+        <!-- SIDEBAR -->
+        <nav class="d-flex flex-column p-3"
+            style="width:250px;min-height:100vh;background:#1a1d23;border-right:1px solid #2d3139;flex-shrink:0;">
+            <div class="mb-4 px-2">
+                <div class="text-uppercase fw-bold" style="font-size:11px;letter-spacing:.1em;color:#6c757d">CMMS</div>
+                <div class="fw-bold fs-5 text-white mt-1">Maintenance</div>
+            </div>
+            <ul class="nav nav-pills flex-column gap-1">
+                <li><a href="dashboard.html" class="nav-link sidebar-link" data-page="dashboard"><i
+                            class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                <li><a href="assets.html" class="nav-link sidebar-link" data-page="assets"><i
+                            class="bi bi-boxes me-2"></i>Assets</a></li>
+                <li><a href="work-orders.html" class="nav-link sidebar-link" data-page="work-orders"><i
+                            class="bi bi-wrench-adjustable me-2"></i>Work Orders</a></li>
+                <li><a href="schedule.html" class="nav-link sidebar-link" data-page="schedule"><i
+                            class="bi bi-calendar3 me-2"></i>Schedule</a></li>
+                <li class="admin-only" style="display:none"><a href="users.html" class="nav-link sidebar-link"
+                        data-page="users"><i class="bi bi-people me-2"></i>Users</a></li>
+            </ul>
+            <div class="mt-auto pt-3 border-top" style="border-color:#2d3139!important">
+                <div class="d-flex align-items-center gap-2 px-2 mb-2">
+                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold"
+                        style="width:32px;height:32px;font-size:13px" id="user-avatar">?</div>
+                    <div>
+                        <div class="text-white fw-semibold" style="font-size:13px" id="user-name">Loading...</div>
+                        <div style="font-size:11px;color:#6c757d" id="user-role"></div>
+                    </div>
+                </div>
+                <button onclick="logout()" class="btn btn-sm w-100"
+                    style="background:#2d3139;color:#adb5bd;border:none">
+                    <i class="bi bi-box-arrow-left me-1"></i>Logout
+                </button>
+            </div>
+        </nav>
+
+        <!-- MAIN -->
+        <div class="d-flex flex-column flex-grow-1">
+            <div class="topbar">
+                <span class="page-title">Maintenance Schedule</span>
+                <button class="btn btn-primary btn-sm admin-only" style="display:none" onclick="openAddModal()">
+                    <i class="bi bi-plus-circle me-1"></i> Add Schedule
+                </button>
+            </div>
+
+            <div class="page-content">
+
+                <!-- SUMMARY CARDS -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <div class="stat-card">
+                            <div class="stat-label">Total Schedules</div>
+                            <div class="stat-val text-white mt-2" id="stat-total">—</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card">
+                            <div class="stat-label">Due This Week</div>
+                            <div class="stat-val text-warning mt-2" id="stat-week">—</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card">
+                            <div class="stat-label">Overdue</div>
+                            <div class="stat-val text-danger mt-2" id="stat-overdue">—</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SCHEDULE TABLE -->
+                <div class="cmms-card p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="fw-bold text-white mb-0">All Scheduled Tasks</h6>
+                        <div class="d-flex gap-2">
+                            <select id="filter-freq" class="form-select form-select-sm" style="width:auto">
+                                <option value="">All frequencies</option>
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                                <option value="annual">Annual</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-dark-cmms table-hover align-middle mb-0">
+                            <thead>
+                                <tr style="font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#6c757d">
+                                    <th class="border-0 pb-2">Task</th>
+                                    <th class="border-0 pb-2">Asset</th>
+                                    <th class="border-0 pb-2">Frequency</th>
+                                    <th class="border-0 pb-2">Next Due</th>
+                                    <th class="border-0 pb-2">Last Done</th>
+                                    <th class="border-0 pb-2">Status</th>
+                                    <th class="border-0 pb-2 admin-only" style="display:none">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="schedule-body" style="font-size:13px">
+                                <tr>
+                                    <td colspan="7" class="text-center py-4" style="color:#6c757d">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD/EDIT MODAL -->
+    <div class="modal fade" id="scheduleModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-white" id="modal-title">Add Schedule</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="sched-id">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label" style="font-size:12px;color:#adb5bd">Title *</label>
+                            <input type="text" id="f-title" class="form-control"
+                                placeholder="e.g. Monthly filter check">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" style="font-size:12px;color:#adb5bd">Asset *</label>
+                            <select id="f-asset" class="form-select">
+                                <option value="">Select asset</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" style="font-size:12px;color:#adb5bd">Frequency *</label>
+                            <select id="f-freq" class="form-select">
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly" selected>Monthly</option>
+                                <option value="annual">Annual</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" style="font-size:12px;color:#adb5bd">Next Due</label>
+                            <input type="date" id="f-next" class="form-control">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" style="font-size:12px;color:#adb5bd">Description</label>
+                            <textarea id="f-desc" class="form-control" rows="2"
+                                placeholder="What to do during this maintenance..."></textarea>
+                        </div>
+                    </div>
+                    <div id="modal-error" class="alert alert-danger mt-3 d-none"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm" style="background:#2d3139;color:#adb5bd"
+                        data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="saveSchedule()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MARK DONE MODAL -->
+    <div class="modal fade" id="doneModal" tabindex="-1">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-white">Mark as Done</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" style="font-size:13px;color:#adb5bd">
+                    Mark this task as completed today and update next due date?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm" style="background:#2d3139;color:#adb5bd"
+                        data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success btn-sm" onclick="confirmDone()">Mark Done</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        requireAuth();
+        loadSidebar();
+
+        let allSchedules = [];
+        let doneId = null;
+
+        const freqMap = {
+            daily: { label: 'Daily', days: 1 },
+            weekly: { label: 'Weekly', days: 7 },
+            monthly: { label: 'Monthly', days: 30 },
+            annual: { label: 'Annual', days: 365 }
+        };
+
+        function freqBadge(f) {
+            const colors = {
+                daily: '#1a3a5c:#60a5fa',
+                weekly: '#3a2a00:#fbbf24',
+                monthly: '#0d2d1a:#34d399',
+                annual: '#2a1a3a:#b78bf8'
+            };
+            const [bg, color] = (colors[f] || '#2d3139:#adb5bd').split(':');
+            return `<span class="badge rounded-pill px-2" style="background:${bg};color:${color};font-size:11px">${freqMap[f]?.label || f}</span>`;
+        }
+
+        function dueBadge(dateStr) {
+            if (!dateStr) return '—';
+            const date = new Date(dateStr);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const diff = Math.ceil((date - today) / (1000 * 60 * 60 * 24));
+            const str = date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+            if (diff < 0) return `<span class="text-danger fw-semibold">${str} (${Math.abs(diff)}d overdue)</span>`;
+            if (diff === 0) return `<span class="text-warning fw-semibold">${str} (today)</span>`;
+            if (diff <= 7) return `<span class="text-warning">${str} (in ${diff}d)</span>`;
+            return `<span style="color:#adb5bd">${str}</span>`;
+        }
+
+        function statusDot(dateStr) {
+            if (!dateStr) return `<span class="badge rounded-pill px-2" style="background:#2d3139;color:#6c757d;font-size:11px">No date</span>`;
+            const diff = Math.ceil((new Date(dateStr) - new Date()) / (1000 * 60 * 60 * 24));
+            if (diff < 0) return `<span class="badge rounded-pill px-2" style="background:#3a0a0a;color:#f87171;font-size:11px">Overdue</span>`;
+            if (diff === 0) return `<span class="badge rounded-pill px-2" style="background:#3a2a00;color:#fbbf24;font-size:11px">Due Today</span>`;
+            if (diff <= 7) return `<span class="badge rounded-pill px-2" style="background:#3a2a00;color:#fbbf24;font-size:11px">Due Soon</span>`;
+            return `<span class="badge rounded-pill px-2" style="background:#0d2d1a;color:#34d399;font-size:11px">On Track</span>`;
+        }
+
+        async function loadAssets() {
+            const res = await apiFetch('/assets');
+            const assets = await res.json();
+            const sel = document.getElementById('f-asset');
+            assets.forEach(a => {
+                const o = document.createElement('option');
+                o.value = a.id; o.textContent = a.name;
+                sel.appendChild(o);
+            });
+        }
+
+        async function loadSchedules() {
+            try {
+                const res = await apiFetch('/schedules');
+                allSchedules = await res.json();
+                updateStats();
+                renderTable(allSchedules);
+            } catch {
+                document.getElementById('schedule-body').innerHTML =
+                    `<tr><td colspan="7" class="text-center py-4 text-danger">Failed to load</td></tr>`;
+            }
+        }
+
+        function updateStats() {
+            const today = new Date(); today.setHours(0, 0, 0, 0);
+            const week = new Date(today); week.setDate(week.getDate() + 7);
+            document.getElementById('stat-total').textContent = allSchedules.length;
+            document.getElementById('stat-week').textContent = allSchedules.filter(s => {
+                const d = new Date(s.next_due);
+                return d >= today && d <= week;
+            }).length;
+            document.getElementById('stat-overdue').textContent = allSchedules.filter(s => new Date(s.next_due) < today).length;
+        }
+
+        function renderTable(schedules) {
+            const user = getUser();
+            const isAdmin = user?.role === 'admin';
+            const tbody = document.getElementById('schedule-body');
+
+            if (!schedules.length) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4" style="color:#6c757d">No schedules found</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = schedules.map(s => `
+      <tr>
+        <td>
+          <div class="fw-semibold text-white">${s.title}</div>
+          ${s.description ? `<div style="font-size:11px;color:#6c757d">${s.description}</div>` : ''}
+        </td>
+        <td style="color:#adb5bd">${s.asset_name || '—'}</td>
+        <td>${freqBadge(s.frequency)}</td>
+        <td style="font-size:12px">${dueBadge(s.next_due)}</td>
+        <td style="font-size:12px;color:#6c757d">${s.last_done ? new Date(s.last_done).toLocaleDateString('en-GB') : '—'}</td>
+        <td>${statusDot(s.next_due)}</td>
+        <td class="admin-only" style="${isAdmin ? '' : 'display:none'}">
+          <button class="btn btn-sm me-1" style="background:#0d2d1a;color:#34d399;font-size:12px" onclick="openDoneModal(${s.id})" title="Mark as done">
+            <i class="bi bi-check-circle"></i>
+          </button>
+          <button class="btn btn-sm me-1" style="background:#2d3139;color:#adb5bd;font-size:12px" onclick="openEditModal(${s.id})">
+            <i class="bi bi-pencil"></i>
+          </button>
+          <button class="btn btn-sm" style="background:#3a0a0a;color:#f87171;font-size:12px" onclick="deleteSchedule(${s.id})">
+            <i class="bi bi-trash"></i>
+          </button>
+        </td>
+      </tr>
+    `).join('');
+        }
+
+        document.getElementById('filter-freq').addEventListener('change', function () {
+            const val = this.value;
+            renderTable(val ? allSchedules.filter(s => s.frequency === val) : allSchedules);
+        });
+
+        function openAddModal() {
+            document.getElementById('modal-title').textContent = 'Add Schedule';
+            document.getElementById('sched-id').value = '';
+            document.getElementById('f-title').value = '';
+            document.getElementById('f-asset').value = '';
+            document.getElementById('f-freq').value = 'monthly';
+            document.getElementById('f-next').value = '';
+            document.getElementById('f-desc').value = '';
+            document.getElementById('modal-error').classList.add('d-none');
+            new bootstrap.Modal(document.getElementById('scheduleModal')).show();
+        }
+
+        function openEditModal(id) {
+            const s = allSchedules.find(x => x.id === id);
+            if (!s) return;
+            document.getElementById('modal-title').textContent = 'Edit Schedule';
+            document.getElementById('sched-id').value = s.id;
+            document.getElementById('f-title').value = s.title;
+            document.getElementById('f-asset').value = s.asset_id || '';
+            document.getElementById('f-freq').value = s.frequency;
+            document.getElementById('f-next').value = s.next_due ? s.next_due.split('T')[0] : '';
+            document.getElementById('f-desc').value = s.description || '';
+            document.getElementById('modal-error').classList.add('d-none');
+            new bootstrap.Modal(document.getElementById('scheduleModal')).show();
+        }
+
+        async function saveSchedule() {
+            const id = document.getElementById('sched-id').value;
+            const freq = document.getElementById('f-freq').value;
+            const body = {
+                title: document.getElementById('f-title').value.trim(),
+                asset_id: document.getElementById('f-asset').value || null,
+                frequency: freq,
+                next_due: document.getElementById('f-next').value || null,
+                description: document.getElementById('f-desc').value.trim(),
+                is_active: true
+            };
+            if (!body.title || !body.asset_id || !body.frequency) {
+                document.getElementById('modal-error').textContent = 'Title, asset and frequency are required';
+                document.getElementById('modal-error').classList.remove('d-none');
+                return;
+            }
+            try {
+                const res = await apiFetch(id ? `/schedules/${id}` : '/schedules', {
+                    method: id ? 'PATCH' : 'POST',
+                    body: JSON.stringify(body)
+                });
+                if (!res.ok) {
+                    const err = await res.json();
+                    document.getElementById('modal-error').textContent = err.error;
+                    document.getElementById('modal-error').classList.remove('d-none');
+                    return;
+                }
+                bootstrap.Modal.getInstance(document.getElementById('scheduleModal')).hide();
+                await loadSchedules();
+            } catch {
+                document.getElementById('modal-error').textContent = 'Server error';
+                document.getElementById('modal-error').classList.remove('d-none');
+            }
+        }
+
+        function openDoneModal(id) {
+            doneId = id;
+            new bootstrap.Modal(document.getElementById('doneModal')).show();
+        }
+
+        async function confirmDone() {
+            if (!doneId) return;
+            const s = allSchedules.find(x => x.id === doneId);
+            const freq = freqMap[s.frequency] || { days: 30 };
+            const next = new Date();
+            next.setDate(next.getDate() + freq.days);
+            const nextStr = next.toISOString().split('T')[0];
+
+            await apiFetch(`/schedules/${doneId}`, {
+                method: 'PATCH',
+                body: JSON.stringify({
+                    title: s.title, frequency: s.frequency,
+                    next_due: nextStr,
+                    last_done: new Date().toISOString().split('T')[0],
+                    description: s.description, is_active: true
+                })
+            });
+            bootstrap.Modal.getInstance(document.getElementById('doneModal')).hide();
+            doneId = null;
+            await loadSchedules();
+        }
+
+        async function deleteSchedule(id) {
+            if (!confirm('Delete this schedule?')) return;
+            await apiFetch(`/schedules/${id}`, { method: 'DELETE' });
+            await loadSchedules();
+        }
+
+        loadAssets();
+        loadSchedules();
+    </script>
+</body>
+
+</html>
