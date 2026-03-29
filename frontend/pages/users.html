@@ -1,3 +1,8 @@
+<script>
+    if (!sessionStorage.getItem('cmms_token')) {
+        window.location.replace('../index.html');
+    }
+</script>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -14,39 +19,7 @@
     <div class="page-wrapper">
 
         <!-- SIDEBAR -->
-        <nav class="d-flex flex-column p-3"
-            style="width:250px;min-height:100vh;background:#1a1d23;border-right:1px solid #2d3139;flex-shrink:0;">
-            <div class="mb-4 px-2">
-                <div class="text-uppercase fw-bold" style="font-size:11px;letter-spacing:.1em;color:#6c757d">CMMS</div>
-                <div class="fw-bold fs-5 text-white mt-1">Maintenance</div>
-            </div>
-            <ul class="nav nav-pills flex-column gap-1">
-                <li><a href="dashboard.html" class="nav-link sidebar-link" data-page="dashboard"><i
-                            class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
-                <li><a href="assets.html" class="nav-link sidebar-link" data-page="assets"><i
-                            class="bi bi-boxes me-2"></i>Assets</a></li>
-                <li><a href="work-orders.html" class="nav-link sidebar-link" data-page="work-orders"><i
-                            class="bi bi-wrench-adjustable me-2"></i>Work Orders</a></li>
-                <li><a href="schedule.html" class="nav-link sidebar-link" data-page="schedule"><i
-                            class="bi bi-calendar3 me-2"></i>Schedule</a></li>
-                <li class="admin-only" style="display:none"><a href="users.html" class="nav-link sidebar-link"
-                        data-page="users"><i class="bi bi-people me-2"></i>Users</a></li>
-            </ul>
-            <div class="mt-auto pt-3 border-top" style="border-color:#2d3139!important">
-                <div class="d-flex align-items-center gap-2 px-2 mb-2">
-                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold"
-                        style="width:32px;height:32px;font-size:13px" id="user-avatar">?</div>
-                    <div>
-                        <div class="text-white fw-semibold" style="font-size:13px" id="user-name">Loading...</div>
-                        <div style="font-size:11px;color:#6c757d" id="user-role"></div>
-                    </div>
-                </div>
-                <button onclick="logout()" class="btn btn-sm w-100"
-                    style="background:#2d3139;color:#adb5bd;border:none">
-                    <i class="bi bi-box-arrow-left me-1"></i>Logout
-                </button>
-            </div>
-        </nav>
+        <div id="sidebar-container"></div>
 
         <!-- MAIN -->
         <div class="d-flex flex-column flex-grow-1">
@@ -139,7 +112,7 @@
     <script src="../js/auth.js"></script>
     <script>
         requireAuth();
-        loadSidebar();
+        loadSidebarComponent();
 
         // Redirect if not admin
         const me = getUser();

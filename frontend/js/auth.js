@@ -37,6 +37,18 @@ async function apiFetch(path, options = {}) {
     return res;
 }
 
+async function loadSidebarComponent() {
+    try {
+        const res = await fetch('../components/sidebar.html');
+        const html = await res.text();
+        document.getElementById('sidebar-container').innerHTML = html;
+        // Now run sidebar setup AFTER html is injected into DOM
+        loadSidebar();
+    } catch (err) {
+        console.error('Failed to load sidebar:', err);
+    }
+}
+
 function loadSidebar() {
     const user = getUser();
     if (!user) return;
