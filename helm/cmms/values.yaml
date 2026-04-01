@@ -1,0 +1,36 @@
+namespace: cmms
+
+backend:
+  image:
+    repository: cmms-backend
+    tag: latest
+    pullPolicy: Never
+  replicas: 1
+  port: 3000
+  dbHost: postgrs-service
+
+frontend:
+  image:
+    repository: cmms-frontend
+    tag: latest
+    pullPolicy: Never
+  replicas: 1
+  port: 80
+  nodePort: 30081
+
+postgres:
+  image:
+    repository: postgres
+    tag: 15-alpine
+  port: 5432
+  storage: 2Gi
+
+service:
+  backendNodePort: 30300
+  frontendNodePort: 30081
+
+secret:
+  postgresDb: cmmsdb
+  postgresUser: cmmsuser
+  postgresPassword: cmmspass
+  jwtSecret: your-super-secret-jwt-key-change-this
