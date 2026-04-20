@@ -9,6 +9,9 @@ echo "📦 Building Docker image..."
 cd ~/cmms-k8s/frontend
 docker build -t cmms-frontend:latest .
 
+echo "🚀 Restarting Kubernetes deployment..."
+kubectl rollout restart deployment frontend -n cmms
+
 echo "🚀 Upgrading Helm release..."
 helm upgrade cmms ~/cmms-k8s/helm/cmms
 
