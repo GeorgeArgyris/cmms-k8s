@@ -1,14 +1,18 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -e
 
-# start postgres (fire-and-forget, same as your command)
-docker run -d \
-  -e POSTGRES_DB=cmmsdb \
-  -e POSTGRES_USER=cmmsuser \
-  -e POSTGRES_PASSWORD=cmmspass \
-  -p 5432:5432 \
-  postgres:15-alpine
+echo "🧪 Starting test database..."
 
-# run tests
+docker compose -f ../docker-compose.test.yml up -d
+
+echo "⏳ Waiting for database..."
+
+until docker exec cmms-test-db pg_isready -U cmmsuser >/dev/null 2>&1; do
+  sleep 1
+done
+
+echo "✅ Database ready"
+
 cd ../backend || exit 1
 
 NODE_ENV=test \
@@ -19,3 +23,7 @@ DB_NAME=cmmsdb \
 DB_USER=cmmsuser \
 DB_PASS=cmmspass \
 npm test
+
+echo "🧹 Stopping test database..."
+
+docker compose -f docker-compose.test.yml down -v
