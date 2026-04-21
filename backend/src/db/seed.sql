@@ -18,7 +18,7 @@ INSERT INTO assets (name, serial_number, model, category_id, location_id, status
   ('Fire Suppression System',  'SN-2018-007', 'Kidde Sapphire',   5, 1, 'active', 'Inspection due Q2'),
   ('Forklift Toyota FLK-01',   'SN-2022-033', 'Toyota 8FBN25',    3, 3, 'under_maintenance', 'Hydraulic issue reported');
 
--- Admin user: admin@cmms.dev / password123
+-- Admin user: admin@cmms.dev / password
 INSERT INTO users (name, email, password_hash, role) VALUES
   ('Admin User', 'admin@cmms.dev',
    '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin'),

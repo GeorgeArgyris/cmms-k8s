@@ -68,13 +68,31 @@ router.patch('/:id', verifyToken, async (req, res) => {
     try {
         const completed_at = status === 'done' ? 'NOW()' : null;
         const { rows } = await pool.query(`
-      UPDATE work_orders SET
-        title=$1, description=$2, asset_id=$3, assigned_to=$4,
-        status=$5, priority=$6, due_date=$7,
-        completed_at = CASE WHEN $5 = 'done' THEN NOW() ELSE completed_at END,
-        updated_at = NOW()
-      WHERE id=$8 RETURNING *
-    `, [title, description, asset_id, assigned_to, status, priority, due_date, req.params.id]);
+        UPDATE work_orders SET
+            title = COALESCE($1, title),
+            description = COALESCE($2, description),
+            asset_id = COALESCE($3, asset_id),
+            assigned_to = COALESCE($4, assigned_to),
+            status = COALESCE($5, status),
+            priority = COALESCE($6, priority),
+            due_date = COALESCE($7, due_date),
+            completed_at = CASE 
+            WHEN $5 = 'done' THEN NOW() 
+            ELSE completed_at 
+            END,
+            updated_at = NOW()
+        WHERE id = $8
+        RETURNING *
+        `, [
+            title ?? null,
+            description ?? null,
+            asset_id ?? null,
+            assigned_to ?? null,
+            status ?? null,
+            priority ?? null,
+            due_date ?? null,
+            req.params.id
+        ]);
         if (!rows[0]) return res.status(404).json({ error: 'Not found' });
         res.json(rows[0]);
     } catch (err) {

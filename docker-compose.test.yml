@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: cmms-test-db
+    environment:
+      POSTGRES_DB: cmmsdb
+      POSTGRES_USER: cmmsuser
+      POSTGRES_PASSWORD: cmmspass
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cmmsuser"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
