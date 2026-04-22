@@ -53,6 +53,7 @@ router.delete('/:id', verifyToken, requireAdmin, async (req, res) => {
         await pool.query('DELETE FROM maintenance_schedules WHERE id = $1', [req.params.id]);
         res.json({ deleted: true });
     } catch (_err) {
+        console.error(_err);
         res.status(500).json({ error: 'Server error' });
     }
 });

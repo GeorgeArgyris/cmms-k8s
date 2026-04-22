@@ -16,7 +16,7 @@ router.get('/', verifyToken, async (req, res) => {
       ORDER BY wo.created_at DESC
     `);
         res.json(rows);
-    } catch (err) {
+    } catch (_err) {
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -42,7 +42,8 @@ router.get('/:id', verifyToken, async (req, res) => {
     `, [req.params.id]);
 
         res.json({ ...rows[0], comments: comments.rows });
-    } catch (err) {
+    } catch (_err) {
+        console.error(_err);
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -57,7 +58,8 @@ router.post('/', verifyToken, async (req, res) => {
       VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *
     `, [title, description, asset_id, assigned_to, req.user.id, priority || 'medium', due_date]);
         res.status(201).json(rows[0]);
-    } catch (err) {
+    } catch (_err) {
+        console.error(_err);
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -95,7 +97,8 @@ router.patch('/:id', verifyToken, async (req, res) => {
         ]);
         if (!rows[0]) return res.status(404).json({ error: 'Not found' });
         res.json(rows[0]);
-    } catch (err) {
+    } catch (_err) {
+        console.error(_err);
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -105,7 +108,7 @@ router.delete('/:id', verifyToken, requireAdmin, async (req, res) => {
     try {
         await pool.query('DELETE FROM work_orders WHERE id = $1', [req.params.id]);
         res.json({ deleted: true });
-    } catch (err) {
+    } catch (_err) {
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -120,7 +123,7 @@ router.post('/:id/comments', verifyToken, async (req, res) => {
       VALUES ($1,$2,$3) RETURNING *
     `, [req.params.id, req.user.id, body]);
         res.status(201).json(rows[0]);
-    } catch (err) {
+    } catch (_err) {
         res.status(500).json({ error: 'Server error' });
     }
 });

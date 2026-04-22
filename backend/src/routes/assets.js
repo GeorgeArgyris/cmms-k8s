@@ -79,7 +79,7 @@ router.delete('/:id', verifyToken, requireAdmin, async (req, res) => {
     try {
         await pool.query('DELETE FROM assets WHERE id = $1', [req.params.id]);
         res.json({ deleted: true });
-    } catch (err) {
+    } catch (_err) {
         res.status(500).json({ error: 'Server error' });
     }
 });
