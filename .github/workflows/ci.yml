@@ -13,7 +13,7 @@ jobs:
         image: postgres:15-alpine
         env:
           POSTGRES_USER: cmmsuser
-          POSTGRES_PASSWORD: smmspass
+          POSTGRES_PASSWORD: cmmspass
           POSTGRES_DB: cmmsdb
         ports:
           - 5432:5432
