@@ -104,8 +104,6 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-          # ↑ GitHub waits until pg_isready reports healthy before starting
-          #   your steps — no more "connection refused" race conditions.
 
     defaults:
       run:
