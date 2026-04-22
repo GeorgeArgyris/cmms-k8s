@@ -13,7 +13,7 @@ router.get('/', verifyToken, async (req, res) => {
       ORDER BY s.next_due ASC
     `);
         res.json(rows);
-    } catch (err) {
+    } catch (_err) {
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -27,7 +27,7 @@ router.post('/', verifyToken, requireAdmin, async (req, res) => {
       VALUES ($1,$2,$3,$4,$5) RETURNING *
     `, [title, asset_id, frequency, next_due, description]);
         res.status(201).json(rows[0]);
-    } catch (err) {
+    } catch (_err) {
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -43,7 +43,7 @@ router.patch('/:id', verifyToken, async (req, res) => {
     `, [title, frequency, next_due, last_done, description, is_active, req.params.id]);
         if (!rows[0]) return res.status(404).json({ error: 'Not found' });
         res.json(rows[0]);
-    } catch (err) {
+    } catch (_err) {
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -52,7 +52,7 @@ router.delete('/:id', verifyToken, requireAdmin, async (req, res) => {
     try {
         await pool.query('DELETE FROM maintenance_schedules WHERE id = $1', [req.params.id]);
         res.json({ deleted: true });
-    } catch (err) {
+    } catch (_err) {
         res.status(500).json({ error: 'Server error' });
     }
 });

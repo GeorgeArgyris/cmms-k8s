@@ -15,8 +15,8 @@ router.get('/', verifyToken, async (req, res) => {
       ORDER BY a.created_at DESC
     `);
         res.json(rows);
-    } catch (err) {
-        console.error(err);
+    } catch (_err) {
+        console.error(_err);
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -33,7 +33,8 @@ router.get('/:id', verifyToken, async (req, res) => {
     `, [req.params.id]);
         if (!rows[0]) return res.status(404).json({ error: 'Asset not found' });
         res.json(rows[0]);
-    } catch (err) {
+    } catch (_err) {
+        console.error(_err);
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -48,7 +49,8 @@ router.post('/', verifyToken, requireAdmin, async (req, res) => {
       VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *
     `, [name, serial_number, model, category_id, location_id, status || 'active', purchase_date, notes]);
         res.status(201).json(rows[0]);
-    } catch (err) {
+    } catch (_err) {
+        console.error(_err);
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -66,7 +68,8 @@ router.patch('/:id', verifyToken, requireAdmin, async (req, res) => {
     `, [name, serial_number, model, category_id, location_id, status, purchase_date, notes, req.params.id]);
         if (!rows[0]) return res.status(404).json({ error: 'Asset not found' });
         res.json(rows[0]);
-    } catch (err) {
+    } catch (_err) {
+        console.error(_err);
         res.status(500).json({ error: 'Server error' });
     }
 });

@@ -31,8 +31,8 @@ router.get('/', verifyToken, async (req, res) => {
             recent_work_orders: recent.rows,
             by_status: byStatus.rows
         });
-    } catch (err) {
-        console.error(err);
+    } catch (_err) {
+        console.error(_err);
         res.status(500).json({ error: 'Server error' });
     }
 });
