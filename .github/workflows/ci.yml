@@ -7,6 +7,23 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    services: 
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: cmmsuser
+          POSTGRES_PASSWORD: smmspass
+          POSTGRES_DB: cmmsdb
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U cmmsuser"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+
     defaults:
       run:
         working-directory: backend
@@ -23,11 +40,28 @@ jobs:
       - name: Install
         run: npm ci
 
+      - name: Wait for Postgres
+        run: |
+          until pg_isready -h localhost -U cmmsuser; do
+            sleep 1
+          done
+
       - name: Health check — app loads without crashing
         run: node -e "require('./src/app'); console.log('App loaded successfully');"
         env:
           JWT_SECRET: ci-placeholder
           DB_HOST: localhost
+          DB_PORT: 5432
+          DB_NAME: cmmsdb
+          DB_USER: cmmsuser
+          DB_PASS: cmmspass
 
       - name: Run tests
         run: npm test
+        env:
+          JWT_SECRET: test-secret
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_NAME: cmmsdb
+          DB_USER: cmmsuser
+          DB_PASS: cmmspass
