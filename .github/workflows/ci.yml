@@ -28,3 +28,6 @@ jobs:
         env:
           JWT_SECRET: ci-placeholder
           DB_HOST: localhost
+
+      - name: Run tests
+        run: npm test
