@@ -12,6 +12,11 @@ spec:
     metadata:
       labels:
         app: backend
+      
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "{{ .Values.backend.port }}"
+        prometheus.io/path: "/metrics"
     spec:
       containers:
       - name: backend
@@ -44,6 +49,8 @@ spec:
               key: JWT_SECRET
         ports:
         - containerPort: {{ .Values.backend.port }}
+          name: http
+
         readinessProbe:
           httpGet:
             path: /api/health
@@ -56,11 +63,14 @@ kind: Service
 metadata:
   name: backend-service
   namespace: {{ .Values.namespace }}
+  labels:
+    app: backend
 spec:
   type: NodePort
   selector:
     app: backend
   ports:
-  - port: {{ .Values.backend.port }}
+  - name: http
+    port: {{ .Values.backend.port }}
     targetPort: {{ .Values.backend.port }}
     nodePort: {{ .Values.service.backendNodePort }}

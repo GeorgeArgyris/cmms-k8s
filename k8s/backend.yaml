@@ -12,6 +12,10 @@ spec:
     metadata:
       labels:
         app: backend
+      annotations:                          # ← ADDED
+        prometheus.io/scrape: "true"        # ← ADDED
+        prometheus.io/port: "3000"          # ← ADDED
+        prometheus.io/path: "/metrics"      # ← ADDED
     spec:
       containers:
       - name: backend
@@ -44,6 +48,7 @@ spec:
               key: JWT_SECRET
         ports:
         - containerPort: 3000
+          name: http                       
         readinessProbe:
           httpGet:
             path: /api/health
@@ -56,11 +61,14 @@ kind: Service
 metadata:
   name: backend-service
   namespace: cmms
+  labels:
+    app: backend                            
 spec:
   type: NodePort
   selector:
     app: backend
   ports:
-  - port: 3000
+  - name: http                             
+    port: 3000
     targetPort: 3000
     nodePort: 30300
