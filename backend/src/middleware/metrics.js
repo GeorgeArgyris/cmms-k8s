@@ -41,7 +41,7 @@ function metricsMiddleware(req, res, next) {
             status_code: res.statusCode,
         };
 
-        httpRequestsTotal.inc(labels);
+        totalHTTPRequests.inc(labels);
         httpRequestDurationSeconds.observe(labels, durationSeconds);
         httpRequestsInFlight.dec();
     });
