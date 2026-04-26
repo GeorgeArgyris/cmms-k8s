@@ -1,0 +1,26 @@
+alertmanager:
+  config:
+    global:
+      resolve_timeout: 5m
+
+    route:
+      group_by: ['alertname', 'severity', 'namespace']
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 1h
+      receiver: discord-alerts
+      routes:
+        - matchers:
+            - alertname =~ "TargetDown|etcd.*|Alertmanager.*|Watchdog"
+          receiver: "null"
+
+    receivers:
+      - name: "null"
+      - name: discord-alerts
+        webhook_configs:
+          - url: http://alertmanager-discord.monitoring.svc.cluster.local:9094
+            send_resolved: true
+
+  alertmanagerSpec:
+    secrets:
+      - alertmanager-slack-webhook
