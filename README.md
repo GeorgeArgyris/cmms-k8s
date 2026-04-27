@@ -1,7 +1,5 @@
 # cmms-k8s
 
-![CI](https://github.com/GeorgeArgyris/cmms-k8s/actions/workflows/ci.yml/badge.svg)
-
 [![CI](https://github.com/GeorgeArgyris/cmms-k8s/actions/workflows/ci.yml/badge.svg)](https://github.com/GeorgeArgyris/cmms-k8s/actions/workflows/ci.yml)
 ![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=flat&logo=kubernetes&logoColor=white)
 ![Helm](https://img.shields.io/badge/Helm-0F1689?style=flat&logo=helm&logoColor=white)
@@ -47,7 +45,7 @@ This project implements a CMMS backend API + frontend, fully containerized and d
 ## Architecture
 
 ```
-                        ┌─────────────────────────────────────────┐
+                        ┌──────────────────────────────────────────┐
                         │           Kubernetes Cluster             │
                         │                                          │
   User Browser ────────►│  frontend (nginx)                        │
