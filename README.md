@@ -18,14 +18,6 @@ A **Computerized Maintenance Management System (CMMS)** deployed on Kubernetes w
 - [Architecture](#architecture)
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
-- [Observability Stack](#observability-stack)
-- [Quick Start — Fresh Machine Setup](#quick-start--fresh-machine-setup)
-- [Quick Start — Just Want to Test the App](#quick-start--just-want-to-test-the-app)
-- [Monitoring & Alerting Setup](#monitoring--alerting-setup)
-- [Useful Commands](#useful-commands)
-- [PromQL Queries](#promql-queries)
-- [CI/CD Pipeline](#cicd-pipeline)
-- [Alerts](#alerts)
 
 ---
 
