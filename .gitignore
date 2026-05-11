@@ -137,3 +137,7 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Actual Secrets JWT and Postgress for internal communication
+values-secrets.yaml
+
