@@ -83,26 +83,87 @@ This project implements a CMMS backend API + frontend, fully containerized and d
 ## Project Structure
 
 ```
-cmms-k8s/
-├── backend/                    # Node.js Express API
-│   └── src/
-│       ├── middleware/
-│       │   └── metrics.js      # Prometheus metrics instrumentation
-│       ├── routes/             # API routes (assets, users, workOrders...)
-│       └── app.js
-├── frontend/                   # Static HTML/CSS/JS + Nginx
-├── helm/
-│   ├── cmms/                   # Main Helm chart
-│   │   └── templates/
-│   │       ├── backend.yaml
-│   │       ├── frontend.yaml
-│   │       ├── postgres.yaml
-│   │       ├── prometheusrule.yaml    # Alert rules
-│   │       └── discord-webhook.yaml   # Discord proxy
-│   └── alertmanager-values.yaml       # Alertmanager Helm config
-├── k8s/                        # Raw Kubernetes manifests (reference)
-│   └── servicemonitor.yaml     # Tells Prometheus where to scrape
-├── .github/workflows/
-│   └── ci.yml                  # GitHub Actions CI pipeline
-└── scripts/                    # Deploy helper scripts
+.
+├── LICENSE
+├── README.md
+├── backend
+│   ├── Dockerfile
+│   ├── eslint.config.js
+│   ├── index.js
+│   ├── package-lock.json
+│   ├── package.json
+│   └── src
+│       ├── __tests__
+│       │   ├── assets.test.js
+│       │   ├── auth.test.js
+│       │   ├── dashboard.test.js
+│       │   ├── health.test.js
+│       │   ├── helpers.js
+│       │   ├── middleware.test.js
+│       │   ├── users.test.js
+│       │   └── workOrders.test.js
+│       ├── app.js
+│       ├── controllers
+│       │   └── authController.js
+│       ├── db
+│       │   ├── pool.js
+│       │   ├── schema.sql
+│       │   └── seed.sql
+│       ├── middleware
+│       │   ├── auth.js
+│       │   └── metrics.js
+│       └── routes
+│           ├── assets.js
+│           ├── auth.js
+│           ├── dashboard.js
+│           ├── schedules.js
+│           ├── users.js
+│           └── workOrders.js
+├── docker-compose.test.yml
+├── frontend
+│   ├── Dockerfile
+│   ├── components
+│   │   └── sidebar.html
+│   ├── css
+│   │   └── main.css
+│   ├── index.html
+│   ├── js
+│   │   └── auth.js
+│   ├── nginx.conf
+│   └── pages
+│       ├── assets.html
+│       ├── dashboard.html
+│       ├── schedule.html
+│       ├── users.html
+│       └── work-orders.html
+├── helm
+│   ├── alertmanager-values.yaml
+│   └── cmms
+│       ├── Chart.yaml
+│       ├── templates
+│       │   ├── backend.yaml
+│       │   ├── discord-webhook.yaml
+│       │   ├── frontend.yaml
+│       │   ├── namespace.yaml
+│       │   ├── postgres.yaml
+│       │   ├── prometheusrule.yaml
+│       │   └── secret.yaml
+│       └── values.yaml
+├── k8s
+│   ├── backend.yaml
+│   ├── frontend.yaml
+│   ├── ingress.yaml
+│   ├── namespace.yaml
+│   ├── postgres-secret.yaml
+│   ├── postgres.yaml
+│   └── servicemonitor.yaml
+├── package-lock.json
+├── package.json
+├── scripts
+│   ├── deploy-backend-helm.sh
+│   ├── deploy-backend.sh
+│   ├── deploy-frontend-helm.sh
+│   ├── deploy-frontend.sh
+│   └── run_tests.sh
+└── values-secrets.yaml
 ```
