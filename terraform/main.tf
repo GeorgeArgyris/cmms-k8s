@@ -38,3 +38,9 @@ resource "kubernetes_namespace" "monitoring" {
     }
   }
 }
+
+output "frontend_url_instructions" {
+  value = "Access frontend at http://localhost:8080"
+}
+
+
