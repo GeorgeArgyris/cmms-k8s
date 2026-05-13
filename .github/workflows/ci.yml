@@ -231,6 +231,44 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+# ════════════════════════════════════════════════════════════════════════════
+# Terraform
+# ════════════════════════════════════════════════════════════════════════════
+  terraform-check:
+    name: Terraform Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Create local K8s cluster (Kind)
+        uses: engineerd/setup-kind@v0.5.0
+        with:
+          version: "v0.20.0"
+
+      - name: Create placeholder secrets
+        run: |
+          touch values-secrets.yaml
+          echo "secret: { postgresPassword: 'pwd', jwtSecret: 'jwt' }" > values-secrets.yaml
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: terraform
+
+      - name: Terraform Validate
+        run: terraform validate
+        working-directory: terraform
+
+      - name: Terraform Plan
+        run: terraform plan
+        working-directory: terraform
+        env:
+          KUBE_CONFIG_PATH: /home/runner/.kube/config
+
 # ════════════════════════════════════════════════════════════════════════════
 # CI PASS GATE
 # ════════════════════════════════════════════════════════════════════════════
@@ -251,3 +289,4 @@ jobs:
           echo "✅ All checks passed."
         env:
           NEEDS: ${{ toJSON(needs) }}
+
