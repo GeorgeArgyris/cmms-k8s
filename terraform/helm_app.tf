@@ -9,13 +9,12 @@ resource "helm_release" "cmms_app" {
   ]
 
   set {
-    name  = "backend.replicas"
-    value = "2"
+    name  = "backend.image.tag"
+    value = var.app_version
   }
-
   set {
-    name  = "frontend.replicas"
-    value = "2"
+    name  = "frontend.image.tag"
+    value = var.app_version
   }
 
   depends_on = [kubernetes_namespace.cmms]

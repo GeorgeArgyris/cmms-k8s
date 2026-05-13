@@ -264,7 +264,7 @@ jobs:
         working-directory: terraform
 
       - name: Terraform Plan
-        run: terraform plan
+        run: terraform plan -var="app_version=ci-test-tag"
         working-directory: terraform
         env:
           KUBE_CONFIG_PATH: /home/runner/.kube/config
