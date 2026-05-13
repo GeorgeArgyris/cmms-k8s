@@ -141,6 +141,19 @@ vite.config.ts.timestamp-*
 # Actual Secrets JWT and Postgress for internal communication
 values-secrets.yaml
 
+
 # README 2 for personnal notes and detailed analysis - reference for actual md to be updated
 README_02.md
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+_override.tf
+_override.tf.json
+
 
